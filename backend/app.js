@@ -1,8 +1,66 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
+const Post = require('./models/post');
 
-app.use('/api/post', (req, res, next) => {
-  const post = [];
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+//MONGODB USERNAME:gurungabit PASSWORD: 90ECxjuAy0wxmvdw
+//===================================================================================
+// // parse application/json, basically parse incoming Request Object as a JSON Object
+// app.use(bodyParser.json());
+// // parse application/x-www-form-urlencoded, basically can only parse incoming Request Object if strings or arrays
+// app.use(bodyParser.urlencoded({ extended: false }));
+// // combines the 2 above, then you can parse incoming Request Object if object, with nested objects, or generally any type.
+// app.use(bodyParser.urlencoded({ extended: true }));
+//====================================================================================
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, "Accept'
+  );
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, OPTIONS, PUT, DELETE'
+  );
+
+  next();
+});
+
+app.post('/app/posts', (req, res, next) => {
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content
+  });
+  post.save().then(createdPost => {
+    res.status(201).json({
+      message: 'Post added Successfully!',
+      postId: createdPost._id
+    });
+  });
+});
+
+app.get('/app/posts', (req, res, next) => {
+  Post.find({}, (err, posts) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.status(200).json({
+        message: 'Post fetched successfully!',
+        posts: posts
+      });
+    }
+  });
+});
+
+app.delete('/app/posts/:id', (req, res, next) => {
+  Post.deleteOne({ _id: req.params.id }).then(result => {
+    res.status(200).json({
+      message: 'Post Deleted Successfully!'
+    });
+  });
 });
 
 module.exports = app;

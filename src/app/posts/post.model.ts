@@ -1,6 +1,5 @@
 export interface Post {
-  // tslint:disable-next-line: ban-types
-  title: String;
-  // tslint:disable-next-line: ban-types
-  content: String;
+  id: string;
+  title: string;
+  content: string;
 }
