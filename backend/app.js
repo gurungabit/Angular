@@ -1,7 +1,7 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
-const Post = require('./models/post');
+const postRoutes = require("./routes/post");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -16,51 +16,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //====================================================================================
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
-    'Access-Control-Allow-Headers',
+    "Access-Control-Allow-Headers",
     'Origin, X-Requested-With, Content-Type, "Accept'
   );
   res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET, POST, OPTIONS, PUT, DELETE'
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, DELETE"
   );
 
   next();
 });
-
-app.post('/app/posts', (req, res, next) => {
-  const post = new Post({
-    title: req.body.title,
-    content: req.body.content
-  });
-  post.save().then(createdPost => {
-    res.status(201).json({
-      message: 'Post added Successfully!',
-      postId: createdPost._id
-    });
-  });
-});
-
-app.get('/app/posts', (req, res, next) => {
-  Post.find({}, (err, posts) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.status(200).json({
-        message: 'Post fetched successfully!',
-        posts: posts
-      });
-    }
-  });
-});
-
-app.delete('/app/posts/:id', (req, res, next) => {
-  Post.deleteOne({ _id: req.params.id }).then(result => {
-    res.status(200).json({
-      message: 'Post Deleted Successfully!'
-    });
-  });
-});
+app.use("/app/posts", postRoutes);
 
 module.exports = app;
