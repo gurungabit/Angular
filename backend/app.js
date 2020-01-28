@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
@@ -5,6 +6,7 @@ const postRoutes = require("./routes/post");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use("/images", express.static(path.join("backend/images")));
 //MONGODB USERNAME:gurungabit PASSWORD: 90ECxjuAy0wxmvdw
 //===================================================================================
 // // parse application/json, basically parse incoming Request Object as a JSON Object
