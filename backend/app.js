@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const postRoutes = require("./routes/post");
+const mongoose = require("mongoose");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -16,6 +17,20 @@ app.use("/images", express.static(path.join("backend/images")));
 // // combines the 2 above, then you can parse incoming Request Object if object, with nested objects, or generally any type.
 // app.use(bodyParser.urlencoded({ extended: true }));
 //====================================================================================
+mongoose
+  .connect(
+    "mongodb+srv://gurungabit:90ECxjuAy0wxmvdw@cluster0-rcldy.mongodb.net/AngularApp",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    }
+  )
+  .then(() => {
+    console.log("Connected to DB!");
+  })
+  .catch(() => {
+    console.log("Connection failed!");
+  });
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
